@@ -1,3 +1,8 @@
+const express = require('express');
+const app = express();
+const cors = require('cors');
+
+app.use(cors());
 const api_authors = require('./api-authors');
 const api_posts = require('./api-posts');
 const api_tags = require('./api-tags');

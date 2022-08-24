@@ -3,7 +3,9 @@ const db = require('../database/client.js');
 // create a new express-promise-router
 // this has the same API as the normal express router except
 // it allows you to use async functions as route handlers
+const cors = require('cors');
 const router = new Router();
+router.use(cors());
 
 router.get('/', async (req, res) => {
   try {
