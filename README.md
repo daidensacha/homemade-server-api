@@ -50,8 +50,8 @@ CREATE TABLE "posts_tags" (
 Note the image field in posts and authors is of type json. The url and image are inserted as follows.
 
 ```json
-'{"url":"https://images.url",
-    "title":"image-title"}',
+{"url":"https://images.url",
+    "title":"image-title"}
 ```
 
 ### Added NPM Dependencies
