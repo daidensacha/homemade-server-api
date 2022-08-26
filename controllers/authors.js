@@ -1,15 +1,15 @@
-const Router = require('express-promise-router');
-const db = require('../database/client.js');
-const express = require('express');
-// create a new express-promise-router
-// this has the same API as the normal express router except
-// it allows you to use async functions as route handlers
-const router = new Router();
-router.use(express.json());
+const db = require('../database/client');
 
-router.get('/', async (req, res) => {
+const get_all_authors = async (req, res) => {
   try {
-    const { rows: authors } = await db.query(`SELECT * FROM authors;`,
+    const { rows: authors } = await db.query(`SELECT
+      author_id id,
+      name,
+      bio,
+      created_at,
+      image
+    FROM authors
+    `
     );
     console.log(authors);
     return res.status(200).send(authors);
@@ -17,12 +17,9 @@ router.get('/', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-
-// GET author by id
-// Route /api/authors/:id
-router.get('/:id', async (req, res) => {
+const get_author_by_id = async (req, res) => {
   const { id } = req.params;
   // console.log(id);
   try {
@@ -39,36 +36,35 @@ router.get('/:id', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// POST new author
-// Route /api/authors
-router.post('/', async (req, res) => {
+const create_author = async (req, res) => {
   // console.log(req.body);
   const { name, bio, created_at, image } = req.body;
   // const {image: {url, title}} = req.body;
 
-  if (!name || !bio || !created_at  || !image) {
+  if (!name || !bio || !created_at || !image) {
     return res.status(400).send('Missing required fields');
   }
   try {
     const {
       rows: [newAuthor],
-    } = await db.query('INSERT INTO authors (name, bio, created_at, image ) VALUES ($1,$2,$3, $4) RETURNING *', [name, bio, created_at, image]);
+    } = await db.query(
+      'INSERT INTO authors (name, bio, created_at, image ) VALUES ($1,$2,$3, $4) RETURNING *',
+      [name, bio, created_at, image],
+    );
     return res.status(201).send(newAuthor);
   } catch (err) {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// PUT an existing author
-// Route /api/authors/:id
-router.put('/:id', async (req, res) => {
+const update_author = async (req, res) => {
   const { id } = req.params;
   const { name, bio, created_at, image } = req.body;
 
-  if (!name || !bio || !created_at  || !image) {
+  if (!name || !bio || !created_at || !image) {
     return res.status(400).send('Missing required fields');
   }
   try {
@@ -87,17 +83,17 @@ router.put('/:id', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// DELETE an existing author
-// Route /api/authors/:id
-router.delete('/:id', async (req, res) => {
+const delete_author = async (req, res) => {
   const { id } = req.params;
   try {
     const {
       rows: [deleteAuthor],
       rowCount,
-    } = await db.query('DELETE FROM authors WHERE author_id = $1 RETURNING *', [id]);
+    } = await db.query('DELETE FROM authors WHERE author_id = $1 RETURNING *', [
+      id,
+    ]);
     if (!rowCount) {
       return res.status(404).send(`User with id ${id} not found`);
     }
@@ -106,6 +102,12 @@ router.delete('/:id', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  get_all_authors,
+  get_author_by_id,
+  create_author,
+  update_author,
+  delete_author,
+};

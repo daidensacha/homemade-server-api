@@ -2,9 +2,11 @@
 
 # Homemade Server API for Homemade App
 
-This project is specifically to serve data to the [Homemade React App](https://github.com/daidensacha/home-made).
+Homemade [can be viewed here](https://dapper-choux-f34d8d.netlify.app/article/4CRFPqHd7onCDbs41MvHRD), hosted on Netlify.
 
-Live site [can be viewed here](https://dapper-choux-f34d8d.netlify.app/article/4CRFPqHd7onCDbs41MvHRD), hosted on Netlify.
+This API server is set up to specifically serve data to the [Homemade React App](https://github.com/daidensacha/home-made), `homemade-api-data` branch.
+
+
 
 The project is a part of an introduction to React, Node JS, Express JS, and PostgreSQL and setting up an API.
 
@@ -19,7 +21,7 @@ CREATE TABLE "authors" (
   "author_id" SERIAL PRIMARY KEY,
   "name" VARCHAR,
   "bio" TEXT,
-  "image" json, -- insert image url and title as json
+  "image" json, -- insert image url and title as json object
   "created_at" timestamp
 );
 
@@ -29,7 +31,7 @@ CREATE TABLE "posts" (
   "body" TEXT,
   "created_at" timestamp,
   "published_at" timestamp,
-  "image" json, -- insert image url and title as json
+  "image" json, -- insert image url and title as json object
   "author_id" INT,
   CONSTRAINT fk_author FOREIGN KEY ("author_id") REFERENCES "authors" ("author_id")
 );
@@ -47,11 +49,15 @@ CREATE TABLE "posts_tags" (
   CONSTRAINT fk_post FOREIGN KEY ("post_id") REFERENCES "posts" ("post_id")
 ```
 
-Note the image field in posts and authors is of type json. The url and image are inserted as follows.
+#### Adding author and post images
 
+I decided to store images externally and to add an absolute url path to the image, along with the image title when adding images.
+
+The author and post **image column is of type json**.
+
+Insert the image url and title as follows.
 ```json
-{"url":"https://images.url",
-    "title":"image-title"}
+'{ "url": "https://image.url", "title": "image-title" }'
 ```
 
 ### Added NPM Dependencies

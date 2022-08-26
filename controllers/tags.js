@@ -1,15 +1,6 @@
-const Router = require('express-promise-router');
-const db = require('../database/client.js');
-const express = require('express');
-// create a new express-promise-router
-// this has the same API as the normal express router except
-// it allows you to use async functions as route handlers
-const router = new Router();
-router.use(express.json());
+const db = require('../database/client');
 
-// GET all tags
-// Route /api/tags
-router.get('/', async (req, res) => {
+const get_tags = async (req, res) => {
   try {
     const { rows: tags } = await db.query('SELECT * FROM tags');
     console.log(tags);
@@ -18,11 +9,9 @@ router.get('/', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// GET tag by id
-// Route /api/tags/:id
-router.get('/:id', async (req, res) => {
+const get_tag_by_id = async (req, res) => {
   const { id } = req.params;
   // console.log(id);
   try {
@@ -39,11 +28,9 @@ router.get('/:id', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// POST new tag
-// Route /api/tags
-router.post('/', async (req, res) => {
+const create_tag = async (req, res) => {
   // console.log(req.body);
   const { tag } = req.body;
   if (!tag) {
@@ -58,11 +45,9 @@ router.post('/', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// PUT an existing tag
-// Route /api/tags/:id
-router.put('/:id', async (req, res) => {
+const update_tag = async (req, res) => {
   const { id } = req.params;
   const { tag } = req.body;
 
@@ -85,11 +70,9 @@ router.put('/:id', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-// DELETE an existing tag
-// Route /api/tags/:id
-router.delete('/:id', async (req, res) => {
+const delete_tag = async (req, res) => {
   const { id } = req.params;
   try {
     const {
@@ -104,6 +87,12 @@ router.delete('/:id', async (req, res) => {
     console.log(err);
     return res.status(500).send('Server Error');
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  get_tags,
+  get_tag_by_id,
+  create_tag,
+  update_tag,
+  delete_tag,
+};
